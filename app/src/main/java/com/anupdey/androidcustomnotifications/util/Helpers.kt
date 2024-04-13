@@ -1,7 +1,11 @@
 package com.anupdey.androidcustomnotifications.util
 
+import android.app.Activity
 import android.app.ActivityManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.ContextWrapper
+import android.os.Build
 import android.os.Bundle
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -38,3 +42,17 @@ inline fun <reified T> Context.isServiceRunning() =
     (getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
         .getRunningServices(Integer.MAX_VALUE)
         .any { it.service.className == T::class.java.name }
+
+fun getPendingFlags(): Int {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    } else {
+        PendingIntent.FLAG_UPDATE_CURRENT
+    }
+}
+
+fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
+}

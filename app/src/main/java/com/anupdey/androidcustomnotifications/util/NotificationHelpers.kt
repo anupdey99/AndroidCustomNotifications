@@ -32,12 +32,48 @@ fun showNotification(context: Context, id: Int, notification: Notification) {
 fun createNotification(context: Context, notification: NotificationData): NotificationCompat.Builder {
     val intent = Intent(context, MainActivity::class.java)
     val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-    return NotificationCompat.Builder(context, notification.channelId)
+    val builder = NotificationCompat.Builder(context, notification.channelId)
         .setContentTitle(notification.title)
         .setContentText(notification.content)
         .setTicker(notification.ticker)
         .setSmallIcon(R.drawable.ic_launcher_foreground)
         .setContentIntent(pendingIntent)
+        .setPriority(getNotificationPriority(notification.priority))
+        .setAutoCancel(true)
+
+    if (notification.bitmap != null) {
+        builder.setLargeIcon(notification.bitmap)
+        builder.setStyle(
+            NotificationCompat.BigPictureStyle()
+                .bigPicture(notification.bitmap)
+        )
+    }
+
+    if (notification.type == NotificationType.ACTION) {
+        if (!notification.action1Name.isNullOrEmpty() && notification.action1PendingIntent != null) {
+            builder.addAction(
+                notification.actionId,
+                notification.action1Name,
+                notification.action1PendingIntent
+            )
+        }
+        if (!notification.action2Name.isNullOrEmpty() && notification.action2PendingIntent != null) {
+            builder.addAction(
+                notification.actionId,
+                notification.action2Name,
+                notification.action2PendingIntent
+            )
+        }
+    }
+
+    return builder
+}
+
+private fun getNotificationPriority(priority: Int): Int {
+    return if (priority == 0)
+        NotificationCompat.PRIORITY_DEFAULT
+    else
+        NotificationCompat.PRIORITY_MAX
 }
 
 fun createNotification(context: Context, remoteViews: RemoteViews, channelId: String): Notification {
