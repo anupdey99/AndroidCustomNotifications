@@ -33,6 +33,10 @@
             android:name=".util.NotificationBroadcastReceiver"
             android:exported="false" />
 
+        <service
+            android:name=".util.list.ListService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
     </application>
 
 </manifest>

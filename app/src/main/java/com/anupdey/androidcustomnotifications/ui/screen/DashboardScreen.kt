@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.anupdey.androidcustomnotifications.MainActivity
 import com.anupdey.androidcustomnotifications.R
+import com.anupdey.androidcustomnotifications.data.CarouselData
 import com.anupdey.androidcustomnotifications.data.NotificationData
 import com.anupdey.androidcustomnotifications.nav.Screen
 import com.anupdey.androidcustomnotifications.util.NotificationBroadcastReceiver
@@ -41,48 +42,35 @@ fun DashboardScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = {
-                    showBasicNotification(context)
-                }) {
-                Text(text = "Basic Notification", modifier = Modifier.semantics {
-                    contentDescription = "This is custom description"
-                })
-            }
             Spacer(modifier = Modifier.height(4.dp))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = {
-                    showBannerNotification(context)
-                }) {
-                Text(text = "Banner Notification",)
+            Template("Basic Notification") {
+                showBasicNotification(context)
             }
-            Spacer(modifier = Modifier.height(4.dp))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = {
-                    showActionNotification(context)
-                }) {
-                Text(text = "Action Notification",)
+            Template("Banner Notification") {
+                showBannerNotification(context)
             }
-            Spacer(modifier = Modifier.height(4.dp))
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = {
-
-                }) {
-                Text(text = "Dismiss")
+            Template("Action Notification") {
+                showActionNotification(context)
+            }
+            Template("Carousel Notification") {
+                showCarouselNotification(context)
             }
         }
+    }
+}
+
+@Composable
+private fun Template(title: String, onClick: () -> Unit) {
+    Button(
+        modifier = Modifier
+            .fillMaxWidth(),
+        onClick = onClick
+    ) {
+        Text(text = title)
     }
 }
 
@@ -102,8 +90,8 @@ private fun showBasicNotification(context: Context) {
 private fun showBannerNotification(context: Context) {
     val notificationData = NotificationData(
         type = NotificationType.BANNER,
-        title = "Basic Notification Title",
-        content = "Basic notification content",
+        title = "Banner Notification Title",
+        content = "Banner notification content",
         url = "https://mygptest.grameenphone.com/mygpapi/uploads/s1_cards_1584627647.png",
         ticker = context.getString(R.string.app_name),
         channelId = context.getString(R.string.notification_channel_default),
@@ -131,8 +119,8 @@ private fun showActionNotification(context: Context) {
 
     val notificationData = NotificationData(
         type = NotificationType.ACTION,
-        title = "Basic Notification Title",
-        content = "Basic notification content",
+        title = "Action Notification Title",
+        content = "Action notification content",
         url = "https://mygptest.grameenphone.com/mygpapi/uploads/s1_cards_1584627647.png",
 
         actionId = R.drawable.ic_notification,
@@ -147,4 +135,87 @@ private fun showActionNotification(context: Context) {
     )
 
     NotificationManager.process(context, notificationData)
+}
+
+private fun showCarouselNotification(context: Context) {
+
+    val notificationData = NotificationData(
+        type = NotificationType.CAROUSEL,
+        title = "Carousel Notification Title",
+        content = "Carousel notification content",
+        url = "https://mygptest.grameenphone.com/mygpstatic/s1_cards_1706966153_3x.png",
+        carousel = getCarouselList(),
+        carouselIntervalInMillis = 3000,
+        ticker = context.getString(R.string.app_name),
+        channelId = context.getString(R.string.notification_channel_default),
+        notificationId = 104
+    )
+
+    NotificationManager.process(context, notificationData)
+}
+
+private fun getCarouselList(): List<CarouselData> {
+    val carouselList = mutableListOf<CarouselData>()
+    carouselList.add(
+        CarouselData(
+            image = "https://mygptest.grameenphone.com/mygpapi/uploads/s1_cards_1584627647.png",
+            url = "https://www.google.com"
+        )
+    )
+    carouselList.add(
+        CarouselData(
+            image = "https://mygptest.grameenphone.com/mygpstatic/s1_cards_1706966153_3x.png",
+            url = "https://www.google.com"
+        )
+    )
+    carouselList.add(
+        CarouselData(
+            image = "https://mygptest.grameenphone.com/mygpstatic/s1_cards_1706434525_3x.png",
+            url = "https://www.google.com"
+        )
+    )
+    carouselList.add(
+        CarouselData(
+            image = "https://mygptest.grameenphone.com/mygpstatic/s1_cards_1706779012_3x.png",
+            url = "https://www.google.com"
+        )
+    )
+    carouselList.add(
+        CarouselData(
+            image = "https://fastly.picsum.photos/id/42/600/300.jpg?hmac=GwzAKUK6fQm3LDZrEhwkCWM-zSxRBPaAhLifpCJ9RZw",
+            url = "https://www.google.com"
+        )
+    )
+    carouselList.add(
+        CarouselData(
+            image = "https://fastly.picsum.photos/id/92/600/300.jpg?hmac=AYomWlz9wXpwr2LelD8tlQcLadspJLD_k8F-09V8DYk",
+            url = "https://www.google.com"
+        )
+    )
+    carouselList.add(
+        CarouselData(
+            image = "https://fastly.picsum.photos/id/1076/600/300.jpg?hmac=5mtmOdWwUGuKdoE0UvwIHBBzfgFdiWxikx-efYNyC-c",
+            url = "https://www.google.com"
+        )
+    )
+    carouselList.add(
+        CarouselData(
+            image = "https://fastly.picsum.photos/id/29/600/300.jpg?hmac=l9jCv8ZGxSvEs9HWv48lk-BZdUfFXq1qwf45PUBVB28",
+            url = "https://www.google.com"
+        )
+    )
+    carouselList.add(
+        CarouselData(
+            image = "https://fastly.picsum.photos/id/492/600/300.jpg?hmac=8XteBcKNL0qBCF8nGocxssmMI5oNuPe5uo3FObDi4eI",
+            url = "https://www.google.com"
+        )
+    )
+    carouselList.add(
+        CarouselData(
+            image = "https://fastly.picsum.photos/id/397/600/300.jpg?hmac=Fcvu5i0o1f-Mm1OD2Gq-bT6pXa3GODJnoWkF1_uvobI",
+            url = "https://www.google.com"
+        )
+    )
+
+    return carouselList
 }

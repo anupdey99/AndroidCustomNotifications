@@ -1,5 +1,5 @@
 package com.anupdey.androidcustomnotifications.util
 
 enum class NotificationType {
-    DEFAULT, BANNER, ACTION
+    DEFAULT, BANNER, ACTION, CAROUSEL
 }

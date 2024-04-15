@@ -2,6 +2,7 @@ package com.anupdey.androidcustomnotifications.data
 
 import android.app.PendingIntent
 import android.graphics.Bitmap
+import android.widget.RemoteViews
 import com.anupdey.androidcustomnotifications.util.NotificationType
 
 data class NotificationData(
@@ -17,8 +18,12 @@ data class NotificationData(
     val action2Name: String? = "",
     val action2PendingIntent: PendingIntent? = null,
 
+    var carousel: List<CarouselData>? = null,
+    var carouselIntervalInMillis: Int = 3000,
+
     val channelId: String = "",
     val notificationId: Int = 123,
     var priority: Int = 1, //0 default, 1 high
-    var bitmap: Bitmap? = null
+    var bitmap: Bitmap? = null,
+    var remoteViews: RemoteViews? = null
 )

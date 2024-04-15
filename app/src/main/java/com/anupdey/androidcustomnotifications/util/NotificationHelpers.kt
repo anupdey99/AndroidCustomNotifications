@@ -66,6 +66,13 @@ fun createNotification(context: Context, notification: NotificationData): Notifi
         }
     }
 
+    if (notification.type == NotificationType.CAROUSEL) {
+        builder.setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setCustomBigContentView(notification.remoteViews)
+            .setCustomHeadsUpContentView(notification.remoteViews)
+            //.setCustomContentView(notification.remoteViews)
+    }
+
     return builder
 }
 
