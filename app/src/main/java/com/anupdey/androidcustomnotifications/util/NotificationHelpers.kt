@@ -94,20 +94,3 @@ private fun getNotificationPriority(priority: Int): Int {
         NotificationCompat.PRIORITY_MAX
 }
 
-fun createNotification(context: Context, remoteViews: RemoteViews, channelId: String): Notification {
-    val intent = Intent(context, MainActivity::class.java)
-    val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-    return NotificationCompat.Builder(context, channelId)
-        .setContentTitle("OTP Reader")
-        .setContentText("Running on background")
-        .setTicker("OTP Reader")
-        .setOngoing(false)
-        .setSmallIcon(R.drawable.ic_launcher_foreground)
-        .setContentIntent(pendingIntent)
-        .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-        .setCustomBigContentView(remoteViews)
-        .setCustomHeadsUpContentView(remoteViews)
-        .setCustomContentView(remoteViews)
-        .build()
-}
-

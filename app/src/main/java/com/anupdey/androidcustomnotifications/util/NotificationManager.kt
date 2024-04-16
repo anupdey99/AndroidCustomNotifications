@@ -127,6 +127,7 @@ object NotificationManager {
                         remoteViews.addView(R.id.viewFlipper, viewFlipperImage)
                         Log.d("debugNotification", "image downloaded")
                     }
+                    Glide.with(context).clear(futureBitmap)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
