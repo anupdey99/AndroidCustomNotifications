@@ -1,19 +1,16 @@
 package com.anupdey.androidcustomnotifications.util
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.app.NotificationManagerCompat
 import com.anupdey.androidcustomnotifications.R
 import com.anupdey.androidcustomnotifications.data.NotificationData
-import com.anupdey.androidcustomnotifications.util.list.ListService
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import kotlinx.coroutines.CoroutineScope
@@ -113,25 +110,30 @@ object NotificationManager {
         CoroutineScope(Dispatchers.IO).launch {
             remoteViews.removeAllViews(R.id.viewFlipper)
 
+            val futureBitmapList = mutableListOf<FutureTarget<Bitmap>>()
             notificationData.carousel?.forEach {
+                val futureBitmap = Glide.with(context)
+                    .asBitmap()
+                    .load(it.image)
+                    .submit(300,150)
+                futureBitmapList.add(futureBitmap)
+            }
+            futureBitmapList.forEach { futureTarget ->
                 try {
-                    val futureBitmap = Glide.with(context)
-                        .asBitmap()
-                        .load(it.image)
-                        .submit(300,150)
-                    val bitmap = futureBitmap.get()
-
+                    val bitmap = futureTarget.get()
                     if (bitmap != null) {
                         val viewFlipperImage = RemoteViews(context.packageName, R.layout.view_notification_image)
                         viewFlipperImage.setImageViewBitmap(R.id.imageView, bitmap)
                         remoteViews.addView(R.id.viewFlipper, viewFlipperImage)
-                        Log.d("debugNotification", "image downloaded")
+                        Log.d("debugNotification", "image downloaded ${futureTarget.request.hashCode()}")
                     }
-                    Glide.with(context).clear(futureBitmap)
+                    Glide.with(context).clear(futureTarget)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
+            futureBitmapList.clear()
+
             //update notification
             notificationData.remoteViews = remoteViews
             val notificationBuilder = createNotification(context, notificationData)
