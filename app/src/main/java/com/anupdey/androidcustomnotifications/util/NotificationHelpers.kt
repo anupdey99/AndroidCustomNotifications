@@ -42,7 +42,7 @@ fun createNotification(context: Context, notification: NotificationData): Notifi
         .setAutoCancel(true)
 
     if (notification.bitmap != null) {
-        builder.setLargeIcon(notification.bitmap)
+        //builder.setLargeIcon(notification.bitmap)
         builder.setStyle(
             NotificationCompat.BigPictureStyle()
                 .bigPicture(notification.bitmap)
@@ -67,10 +67,21 @@ fun createNotification(context: Context, notification: NotificationData): Notifi
     }
 
     if (notification.type == NotificationType.CAROUSEL) {
+        builder.setOnlyAlertOnce(true)
         builder.setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setCustomBigContentView(notification.remoteViews)
             .setCustomHeadsUpContentView(notification.remoteViews)
             //.setCustomContentView(notification.remoteViews)
+    }
+
+    if (notification.type == NotificationType.TIMER) {
+        builder.setOnlyAlertOnce(true)
+        builder.setChronometerCountDown(true)
+        builder.setUsesChronometer(true)
+        builder.setShowWhen(true)
+        builder.setWhen(notification.countDownTimer + System.currentTimeMillis())
+        builder.setTimeoutAfter(notification.countDownTimer)
+        builder.setDeleteIntent(notification.action1PendingIntent)
     }
 
     return builder

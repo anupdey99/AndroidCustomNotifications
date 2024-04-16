@@ -13,18 +13,21 @@ class NotificationBroadcastReceiver: BroadcastReceiver() {
         intent ?: return
 
         val notificationId = intent.getIntExtra("notificationId", -1)
+        val action = intent.getStringExtra("action") ?: ""
 
-        val intentActivity = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            putExtra("route", intent.getStringExtra("route"))
-            putExtra("data", intent.getStringExtra("data"))
+        if (action == "notification_action") {
+            val intentActivity = Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                putExtra("route", intent.getStringExtra("route"))
+                putExtra("data", intent.getStringExtra("data"))
+            }
+            context.startActivity(intentActivity)
+
+            NotificationManager.dismissNotification(context, notificationId)
+
+        } else if (action == "notification_cancel") {
+            NotificationManager.dismissNotification(context, notificationId)
         }
-        context.startActivity(intentActivity)
 
-        dismissNotification(context, notificationId)
-    }
-
-    private fun dismissNotification(context: Context, notificationId: Int) {
-        NotificationManagerCompat.from(context).cancel(notificationId)
     }
 }

@@ -4,9 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
+import androidx.core.app.NotificationManagerCompat
 import com.anupdey.androidcustomnotifications.R
 import com.anupdey.androidcustomnotifications.data.NotificationData
 import com.anupdey.androidcustomnotifications.util.list.ListService
@@ -26,12 +29,17 @@ object NotificationManager {
             NotificationType.BANNER -> showBannerNotification(context, notificationData)
             NotificationType.ACTION -> showActionNotification(context, notificationData)
             NotificationType.CAROUSEL -> showCarouselNotification(context, notificationData)
+            NotificationType.TIMER -> showTimerNotification(context, notificationData)
         }
     }
 
     private fun createNotificationChannel(context: Context) {
         val channelId = context.getString(R.string.notification_channel_default)
         createNotificationChannel(context, channelId)
+    }
+
+    fun dismissNotification(context: Context, notificationId: Int) {
+        NotificationManagerCompat.from(context).cancel(notificationId)
     }
 
     private fun showDefaultNotification(context: Context, notificationData: NotificationData) {
@@ -129,6 +137,34 @@ object NotificationManager {
             showNotification(context, notificationData.notificationId, notificationBuilder.build())
         }
 
+    }
+
+    private fun showTimerNotification(context: Context, notificationData: NotificationData) {
+        Glide.with(context)
+            .asBitmap()
+            .load(notificationData.url)
+            .into(object : CustomTarget<Bitmap?>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap?>?
+                ) {
+                    notificationData.bitmap = resource
+                    val notificationBuilder = createNotification(context, notificationData)
+                    showNotification(context, notificationData.notificationId, notificationBuilder.build())
+                }
+
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    super.onLoadFailed(errorDrawable)
+                    val notificationBuilder = createNotification(context, notificationData)
+                    showNotification(context, notificationData.notificationId, notificationBuilder.build())
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {}
+            })
+
+        /*Handler(Looper.getMainLooper()).postDelayed({
+            dismissNotification(context, notificationData.notificationId)
+        }, notificationData.countDownTimer)*/
     }
 
 }

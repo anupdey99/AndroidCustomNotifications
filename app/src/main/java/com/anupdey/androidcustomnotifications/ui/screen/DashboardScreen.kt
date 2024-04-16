@@ -59,6 +59,9 @@ fun DashboardScreen(navController: NavHostController) {
             Template("Carousel Notification") {
                 showCarouselNotification(context)
             }
+            Template("Timer Notification") {
+                showTimerNotification(context)
+            }
         }
     }
 }
@@ -107,6 +110,7 @@ private fun showActionNotification(context: Context) {
         putExtra("route", Screen.ResultScreen.route)
         putExtra("data", "Action1")
         putExtra("notificationId", 103)
+        putExtra("action", "notification_action")
     }
     val pendingIntent1 = PendingIntent.getBroadcast(context, 1031, intent1, getPendingFlags())
 
@@ -114,6 +118,7 @@ private fun showActionNotification(context: Context) {
         putExtra("route", Screen.ResultScreen.route)
         putExtra("data", "Action2")
         putExtra("notificationId", 103)
+        putExtra("action", "notification_action")
     }
     val pendingIntent2 = PendingIntent.getBroadcast(context, 1032, intent2, getPendingFlags())
 
@@ -149,6 +154,30 @@ private fun showCarouselNotification(context: Context) {
         ticker = context.getString(R.string.app_name),
         channelId = context.getString(R.string.notification_channel_default),
         notificationId = 104
+    )
+
+    NotificationManager.process(context, notificationData)
+}
+
+private fun showTimerNotification(context: Context) {
+    val intent1 = Intent(context, NotificationBroadcastReceiver::class.java).apply {
+        putExtra("route", Screen.ResultScreen.route)
+        putExtra("data", "Action1")
+        putExtra("notificationId", 105)
+        putExtra("action", "notification_cancel")
+    }
+    val pendingIntent1 = PendingIntent.getBroadcast(context, 1032, intent1, getPendingFlags())
+
+    val notificationData = NotificationData(
+        type = NotificationType.TIMER,
+        title = "Timer Notification Title",
+        content = "Timer notification content",
+        url = "https://mygptest.grameenphone.com/mygpstatic/s1_cards_1706966153_3x.png",
+        countDownTimer = 5000L,
+        action1PendingIntent = pendingIntent1,
+        ticker = context.getString(R.string.app_name),
+        channelId = context.getString(R.string.notification_channel_default),
+        notificationId = 105
     )
 
     NotificationManager.process(context, notificationData)

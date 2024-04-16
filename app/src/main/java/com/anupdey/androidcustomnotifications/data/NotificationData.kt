@@ -21,6 +21,8 @@ data class NotificationData(
     var carousel: List<CarouselData>? = null,
     var carouselIntervalInMillis: Int = 3000,
 
+    var countDownTimer: Long = 0,
+
     val channelId: String = "",
     val notificationId: Int = 123,
     var priority: Int = 1, //0 default, 1 high
